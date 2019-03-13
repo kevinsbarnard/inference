@@ -8,6 +8,7 @@ import numpy as np
 import glob
 import json
 import ntpath
+import exiftool
 
 level_prefix = {
     0: 'info',
@@ -73,6 +74,13 @@ def prep_image_for_model(filename, size):
     return img
 
 
+def read_metadata(filenames) -> list:
+    """ Read metadata from a list of filenames and return a list of dicts of attributes """
+    log('Reading exif metadata from {} images'.format(len(filenames)))
+    with exiftool.ExifTool() as et:
+        return et.get_metadata_batch(filenames)
+
+
 def write_outputs(out_dir, *data):
     """ Write output JSON files to output directory """
     log('Writing JSON outputs for {} images'.format(len(data[0])))
@@ -88,7 +96,8 @@ def make_json(datum) -> dict:
     # TODO Handle which data goes where
     json_data = {
         'filename': datum[0],
-        'output_vector': datum[1].tolist()
+        'output_vector': datum[1].tolist(),
+        'exif_data': datum[2]
     }
 
     return json_data

@@ -73,7 +73,8 @@ def main():
         opts['batch_size'],
         input_size
     )
-    utils.write_outputs(opts['out_dir'], outputs.keys(), outputs.values())
+    exif_data = utils.read_metadata(files)
+    utils.write_outputs(opts['out_dir'], outputs.keys(), outputs.values(), exif_data)
 
 
 if __name__ == '__main__':
